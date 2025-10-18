@@ -22,6 +22,7 @@
 #include "estrace.skel.h"
 #include "btf_helpers.h"
 #include "trace_helpers.h"
+#include "syscall_helpers.h"
 #ifdef USE_BLAZESYM
 #include "blazesym.h"
 #endif
@@ -42,6 +43,7 @@ static struct env {
     pid_t pid;
     pid_t tid;
     uid_t uid;
+    unsigned sys_id;
     int duration;
     bool verbose;
     bool timestamp;
@@ -62,7 +64,7 @@ const char *argp_program_bug_address =
 const char argp_program_doc[] =
 "Trace open family syscalls on Android\n"
 "\n"
-"USAGE: opensnoop [-h] [-T] [-U] [-x] [-p PID] [-t TID] [-u UID] [-d DURATION]\n"
+"USAGE: opensnoop [-h] [-T] [-U] [-x] [-p PID] [-t TID] [-s SyscallId] [-u UID] [-d DURATION]\n"
 #ifdef USE_BLAZESYM
 "                 [-n NAME] [-e] [-c]\n"
 #else
@@ -77,6 +79,7 @@ const char argp_program_doc[] =
 "    ./opensnoop -p 181    # only trace PID 181\n"
 "    ./opensnoop -t 123    # only trace TID 123\n"
 "    ./opensnoop -u 1000   # only trace UID 1000\n"
+"    ./opensnoop -s 123    # only trace Syscall ID 123\n"
 "    ./opensnoop -d 10     # trace for 10 seconds only\n"
 "    ./opensnoop -n main   # only print process names containing \"main\"\n"
 "    ./opensnoop -e        # show extended fields\n"
@@ -92,6 +95,7 @@ static const struct argp_option opts[] = {
     { "name", 'n', "NAME", 0, "Trace process names containing this", 0 },
     { "pid", 'p', "PID", 0, "Process ID to trace", 0 },
     { "tid", 't', "TID", 0, "Thread ID to trace", 0 },
+    { "sys_id", 's', "SYS_ID", 0, "Syscall ID to trace", 0 },
     { "timestamp", 'T', NULL, 0, "Print timestamp", 0 },
     { "uid", 'u', "UID", 0, "User ID to trace", 0 },
     { "print-uid", 'U', NULL, 0, "Print UID", 0 },
@@ -107,6 +111,7 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
 {
     static int pos_args;
     long int pid, uid, duration;
+    unsigned sys_id;
 
     switch (key) {
     case 'e':
@@ -166,6 +171,15 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
             argp_usage(state);
         }
         env.uid = uid;
+        break;
+    case 's':
+        errno = 0;
+        sys_id = strtol(arg, NULL, 10);
+        if (errno || sys_id <= 0) {
+            fprintf(stderr, "Invalid sys_id: %s\n", arg);
+            argp_usage(state);
+        }
+        env.sys_id = sys_id;
         break;
 #ifdef USE_BLAZESYM
     case 'c':
@@ -253,9 +267,11 @@ void handle_event(void *ctx, int cpu, void *data, __u32 data_sz)
         printf("%-7d ", e.uid);
         sps_cnt += 8;
     }
-    printf("%-6d %-16s %3d %3d ", e.pid, e.comm, fd, err);
+    printf("%-6d %-16s %3ld %3d ", e.pid, e.comm, e.sys_id, err);
     sps_cnt += 7 + 17 + 4 + 4;
-    printf("%s\n", e.fname);
+    char syscall_name_buff[64];
+    syscall_name(e.sys_id, syscall_name_buff, sizeof(syscall_name_buff));
+    printf("%s\n", syscall_name_buff);
 
 #ifdef USE_BLAZESYM
     for (i = 0; result && i < result->size; i++) {
@@ -315,6 +331,7 @@ int main(int argc, char **argv)
     obj->rodata->targ_tgid = env.pid;
     obj->rodata->targ_pid = env.tid;
     obj->rodata->targ_uid = env.uid;
+    obj->rodata->targ_sys_id = env.sys_id;
     obj->rodata->targ_failed = env.failed;
 
     /* Set up the ptraceoint/raw_syscalls/ attach points */
@@ -343,7 +360,7 @@ int main(int argc, char **argv)
         printf("%-8s ", "TIME");
     if (env.print_uid)
         printf("%-7s ", "UID");
-    printf("%-6s %-16s %3s %3s ", "PID", "COMM", "FD", "ERR");
+    printf("%-6s %-16s %3s %3s ", "PID", "COMM", "SyscallID", "ERR");
     if (env.extended)
         printf("%-8s %-5s ", "FLAGS", "MODE");
     printf("%s", "PATH");

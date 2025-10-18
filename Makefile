@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: (LGPL-2.1 OR BSD-2-Clause)
 OUTPUT := $(abspath .output)
-ARCH ?= arm64
-# ARCH ?=x86_64
+# ARCH ?= arm64
+ARCH ?=x86_64
 
 ifeq ($(ARCH),arm64)
 CLANG_PREFIX  = aarch64-linux-android30-clang

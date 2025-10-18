@@ -6,7 +6,8 @@
 #define INVALID_UID ((uid_t)-1)
 
 struct args_t {
-    char reserve[16];
+    long int sys_id;
+    long int args[6];
 };
 
 struct event {
@@ -15,6 +16,7 @@ struct event {
 	pid_t pid;
 	uid_t uid;
 	int ret;
+	long int sys_id;
 	__u64 callers[2];
 	char comm[TASK_COMM_LEN];
 	char fname[NAME_MAX];

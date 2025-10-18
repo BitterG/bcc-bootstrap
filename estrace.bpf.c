@@ -5,6 +5,7 @@
 const volatile pid_t targ_pid = 0;
 const volatile pid_t targ_tgid = 0;
 const volatile uid_t targ_uid = 0;
+const volatile unsigned targ_sys_id = 0;
 const volatile bool targ_failed = false;
 
 struct {
@@ -47,8 +48,18 @@ int tracepoint__raw_syscalls__sys_enter(struct trace_event_raw_sys_enter *ctx) {
     u32 tgid = id >> 32;
     u32 pid = id;
 
+    if (targ_sys_id != 0 && targ_sys_id != ctx->id)
+        return 0;
+
     if (trace_allowed(tgid, pid)) {
         struct args_t args = {};
+        args.sys_id = ctx->id;
+        args.args[0] = ctx->args[0];
+        args.args[1] = ctx->args[1];
+        args.args[2] = ctx->args[2];
+        args.args[3] = ctx->args[3];
+        args.args[4] = ctx->args[4];
+        args.args[5] = ctx->args[5];
         bpf_map_update_elem(&start, &pid, &args, 0);
     }
     return 0;
@@ -76,6 +87,7 @@ int tracepoint__raw_syscalls__sys_exit(struct trace_event_raw_sys_exit *ctx) {
     bpf_get_current_comm(&event.comm, sizeof(event.comm));
 
     event.ret = ret;
+    event.sys_id = ap->sys_id;
 
     bpf_get_stack(ctx, &stack, sizeof(stack), BPF_F_USER_STACK);
     /* Skip the first address that is usually the syscall itself */
