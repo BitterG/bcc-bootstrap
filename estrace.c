@@ -175,7 +175,7 @@ static error_t parse_arg(int key, char *arg, struct argp_state *state)
     case 's':
         errno = 0;
         sys_id = strtol(arg, NULL, 10);
-        if (errno || sys_id <= 0) {
+        if (errno || sys_id < 0) {
             fprintf(stderr, "Invalid sys_id: %s\n", arg);
             argp_usage(state);
         }
@@ -271,7 +271,7 @@ void handle_event(void *ctx, int cpu, void *data, __u32 data_sz)
     sps_cnt += 7 + 17 + 4 + 4;
     char syscall_name_buff[64];
     syscall_name(e.sys_id, syscall_name_buff, sizeof(syscall_name_buff));
-    printf("%s\n", syscall_name_buff);
+    printf("%s (%s)\n", syscall_name_buff, e.fname);
 
 #ifdef USE_BLAZESYM
     for (i = 0; result && i < result->size; i++) {

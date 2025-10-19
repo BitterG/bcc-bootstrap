@@ -33,6 +33,7 @@ BZ_APPS = \
 
 APPS = \
 	hello_world \
+	uprobe_hook \
 	$(BZ_APPS) \
 	#
 

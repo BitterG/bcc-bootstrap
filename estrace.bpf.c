@@ -16,6 +16,13 @@ struct {
 } start SEC(".maps");
 
 struct {
+    __uint(type, BPF_MAP_TYPE_ARRAY);
+    __uint(max_entries, 1);
+    __type(key, u32);
+    __type(value, struct event);
+} envent_tmp SEC(".maps");
+
+struct {
     __uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
     __uint(key_size, sizeof(u32));
     __uint(value_size, sizeof(u32));
@@ -67,7 +74,11 @@ int tracepoint__raw_syscalls__sys_enter(struct trace_event_raw_sys_enter *ctx) {
 
 SEC("tracepoint/raw_syscalls/sys_exit")
 int tracepoint__raw_syscalls__sys_exit(struct trace_event_raw_sys_exit *ctx) {
-    struct event event = {};
+    // struct event event = {};
+    struct event *event;
+    event = bpf_map_lookup_elem(&envent_tmp, &(u32){0});
+    if (!event) return 0;
+
     struct args_t *ap;
     uintptr_t stack[3];
     long int ret;
@@ -82,20 +93,41 @@ int tracepoint__raw_syscalls__sys_exit(struct trace_event_raw_sys_exit *ctx) {
         goto cleanup; /* want failed only */
 
     /* event data */
-    event.pid = bpf_get_current_pid_tgid() >> 32;
-    event.uid = bpf_get_current_uid_gid();
-    bpf_get_current_comm(&event.comm, sizeof(event.comm));
+    event->pid = bpf_get_current_pid_tgid() >> 32;
+    event->uid = bpf_get_current_uid_gid();
+    bpf_get_current_comm(event->comm, sizeof(event->comm));
 
-    event.ret = ret;
-    event.sys_id = ap->sys_id;
+    event->ret = ret;
+    event->sys_id = ap->sys_id;
+
+    // 判断文件读取调用号
+    //arm64: openat-56, read-63
+    //x86_64: openat-257, read-0
+    if (event->sys_id == 257) { //读取调用号
+        //读取参数
+        bpf_probe_read_user_str(event->fname, sizeof(event->fname), (void *)ap->args[1]);
+    } else if (event->sys_id == 0) {
+        //read 内容
+        bpf_probe_read_user_str(event->fname, sizeof(event->fname), (void *)ap->args[1]);
+        //修改内容
+        if (event->fname[0] == 'a' && event->fname[1] == 'b' && event->fname[2] == 'c' && event->fname[3] == 'd') {
+            event->fname[0] = 'd';
+            event->fname[1] = 'c';
+            event->fname[2] = 'b';
+            event->fname[3] = 'a';
+            event->fname[4] = '\0';
+            bpf_probe_write_user((void *)(long)ap->args[1], (const void *)event->fname, (u32) 5);
+        }
+        
+    }
 
     bpf_get_stack(ctx, &stack, sizeof(stack), BPF_F_USER_STACK);
     /* Skip the first address that is usually the syscall itself */
-    event.callers[0] = stack[1];
-    event.callers[1] = stack[2];
+    event->callers[0] = stack[1];
+    event->callers[1] = stack[2];
 
     /* emit event */
-    bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU, &event, sizeof(event));
+    bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU, event, sizeof(struct event));
 
 cleanup:
     bpf_map_delete_elem(&start, &pid);

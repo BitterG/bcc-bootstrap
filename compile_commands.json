@@ -1,1 +1,193 @@
-[]
+[
+  {
+    "arguments": [
+      "/home/code/Android/android-ndk-r27d/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android30-clang",
+      "-g",
+      "-O2",
+      "-Wall",
+      "-Werror=undef",
+      "-target",
+      "bpf",
+      "-D__TARGET_ARCH_x86_64",
+      "-Ix86_64/",
+      "-I/home/code/bcc-bootstrap_/.output",
+      "-Ix86_64/include",
+      "-Ix86_64",
+      "-c",
+      "-o",
+      "/home/code/bcc-bootstrap_/.output/uprobe_hook.bpf.o",
+      "uprobe_hook.bpf.c"
+    ],
+    "directory": "/home/code/bcc-bootstrap_",
+    "file": "/home/code/bcc-bootstrap_/uprobe_hook.bpf.c",
+    "output": "/home/code/bcc-bootstrap_/.output/uprobe_hook.bpf.o"
+  },
+  {
+    "arguments": [
+      "/home/code/Android/android-ndk-r27d/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android30-clang",
+      "-g",
+      "-O2",
+      "-Wall",
+      "-Wno-undef",
+      "-Wno-unused-but-set-variable",
+      "-DUSE_BLAZESYM=1",
+      "-I/home/code/bcc-bootstrap_/.output",
+      "-Ix86_64/include",
+      "-Ix86_64",
+      "-c",
+      "-o",
+      "/home/code/bcc-bootstrap_/.output/uprobe_hook.o",
+      "uprobe_hook.c"
+    ],
+    "directory": "/home/code/bcc-bootstrap_",
+    "file": "/home/code/bcc-bootstrap_/uprobe_hook.c",
+    "output": "/home/code/bcc-bootstrap_/.output/uprobe_hook.o"
+  },
+  {
+    "arguments": [
+      "/home/code/Android/android-ndk-r27d/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android30-clang",
+      "-g",
+      "-O2",
+      "-Wall",
+      "-Wno-undef",
+      "-Wno-unused-but-set-variable",
+      "-DUSE_BLAZESYM=1",
+      "-I/home/code/bcc-bootstrap_/.output",
+      "-Ix86_64/include",
+      "-Ix86_64",
+      "-c",
+      "-o",
+      "/home/code/bcc-bootstrap_/.output/trace_helpers.o",
+      "trace_helpers.c"
+    ],
+    "directory": "/home/code/bcc-bootstrap_",
+    "file": "/home/code/bcc-bootstrap_/trace_helpers.c",
+    "output": "/home/code/bcc-bootstrap_/.output/trace_helpers.o"
+  },
+  {
+    "arguments": [
+      "/home/code/Android/android-ndk-r27d/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android30-clang",
+      "-g",
+      "-O2",
+      "-Wall",
+      "-Wno-undef",
+      "-Wno-unused-but-set-variable",
+      "-DUSE_BLAZESYM=1",
+      "-I/home/code/bcc-bootstrap_/.output",
+      "-Ix86_64/include",
+      "-Ix86_64",
+      "-c",
+      "-o",
+      "/home/code/bcc-bootstrap_/.output/syscall_helpers.o",
+      "syscall_helpers.c"
+    ],
+    "directory": "/home/code/bcc-bootstrap_",
+    "file": "/home/code/bcc-bootstrap_/syscall_helpers.c",
+    "output": "/home/code/bcc-bootstrap_/.output/syscall_helpers.o"
+  },
+  {
+    "arguments": [
+      "/home/code/Android/android-ndk-r27d/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android30-clang",
+      "-g",
+      "-O2",
+      "-Wall",
+      "-Wno-undef",
+      "-Wno-unused-but-set-variable",
+      "-DUSE_BLAZESYM=1",
+      "-I/home/code/bcc-bootstrap_/.output",
+      "-Ix86_64/include",
+      "-Ix86_64",
+      "-c",
+      "-o",
+      "/home/code/bcc-bootstrap_/.output/errno_helpers.o",
+      "errno_helpers.c"
+    ],
+    "directory": "/home/code/bcc-bootstrap_",
+    "file": "/home/code/bcc-bootstrap_/errno_helpers.c",
+    "output": "/home/code/bcc-bootstrap_/.output/errno_helpers.o"
+  },
+  {
+    "arguments": [
+      "/home/code/Android/android-ndk-r27d/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android30-clang",
+      "-g",
+      "-O2",
+      "-Wall",
+      "-Wno-undef",
+      "-Wno-unused-but-set-variable",
+      "-DUSE_BLAZESYM=1",
+      "-I/home/code/bcc-bootstrap_/.output",
+      "-Ix86_64/include",
+      "-Ix86_64",
+      "-c",
+      "-o",
+      "/home/code/bcc-bootstrap_/.output/map_helpers.o",
+      "map_helpers.c"
+    ],
+    "directory": "/home/code/bcc-bootstrap_",
+    "file": "/home/code/bcc-bootstrap_/map_helpers.c",
+    "output": "/home/code/bcc-bootstrap_/.output/map_helpers.o"
+  },
+  {
+    "arguments": [
+      "/home/code/Android/android-ndk-r27d/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android30-clang",
+      "-g",
+      "-O2",
+      "-Wall",
+      "-Wno-undef",
+      "-Wno-unused-but-set-variable",
+      "-DUSE_BLAZESYM=1",
+      "-I/home/code/bcc-bootstrap_/.output",
+      "-Ix86_64/include",
+      "-Ix86_64",
+      "-c",
+      "-o",
+      "/home/code/bcc-bootstrap_/.output/uprobe_helpers.o",
+      "uprobe_helpers.c"
+    ],
+    "directory": "/home/code/bcc-bootstrap_",
+    "file": "/home/code/bcc-bootstrap_/uprobe_helpers.c",
+    "output": "/home/code/bcc-bootstrap_/.output/uprobe_helpers.o"
+  },
+  {
+    "arguments": [
+      "/home/code/Android/android-ndk-r27d/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android30-clang",
+      "-g",
+      "-O2",
+      "-Wall",
+      "-Wno-undef",
+      "-Wno-unused-but-set-variable",
+      "-DUSE_BLAZESYM=1",
+      "-I/home/code/bcc-bootstrap_/.output",
+      "-Ix86_64/include",
+      "-Ix86_64",
+      "-c",
+      "-o",
+      "/home/code/bcc-bootstrap_/.output/btf_helpers.o",
+      "btf_helpers.c"
+    ],
+    "directory": "/home/code/bcc-bootstrap_",
+    "file": "/home/code/bcc-bootstrap_/btf_helpers.c",
+    "output": "/home/code/bcc-bootstrap_/.output/btf_helpers.o"
+  },
+  {
+    "arguments": [
+      "/home/code/Android/android-ndk-r27d/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android30-clang",
+      "-g",
+      "-O2",
+      "-Wall",
+      "-Wno-undef",
+      "-Wno-unused-but-set-variable",
+      "-DUSE_BLAZESYM=1",
+      "-I/home/code/bcc-bootstrap_/.output",
+      "-Ix86_64/include",
+      "-Ix86_64",
+      "-c",
+      "-o",
+      "/home/code/bcc-bootstrap_/.output/compat.o",
+      "compat.c"
+    ],
+    "directory": "/home/code/bcc-bootstrap_",
+    "file": "/home/code/bcc-bootstrap_/compat.c",
+    "output": "/home/code/bcc-bootstrap_/.output/compat.o"
+  }
+]
